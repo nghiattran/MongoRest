@@ -1,4 +1,4 @@
-from .. import index
+from .. import MongoRest
 from copy import deepcopy
 import string
 import random
@@ -18,7 +18,7 @@ class BaseTest():
     _TEST_CHANGED_DATA = {'name': 'has changed'}
     _TEST_SET_PUT = {'$set': _TEST_CHANGED_DATA.copy()}
 
-    db = index.MongoRest(_DATABASE)
+    db = MongoRest(_DATABASE)
 
     def sample_post(self):
         return self.db.post(

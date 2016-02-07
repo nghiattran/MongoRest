@@ -1,9 +1,14 @@
 from pymongo import MongoClient
 from src.main import MongoRest
 from copy import deepcopy
+import string
+import random
+
+def random_string(length = 20, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(length))
 
 class BaseTest():
-    _DATABASE = 'test_collection'
+    _DATABASE = 'test_collection1'
     _TEST_TABLE = 'table'
     _TEST_DATA = {
         'name': 'test',
@@ -28,3 +33,4 @@ class BaseTest():
             collection=self._TEST_TABLE,
             payload=payload)
         return res
+

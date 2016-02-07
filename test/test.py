@@ -141,7 +141,13 @@ class TestClass(BaseTest):
 
     @classmethod
     def teardown_class(self):
-        print '\nDone testing! Destroying data in test table.'
+        print ('\nDone testing! Destroying data in test table.')
         self.db.delete_batch(
             collection=self._TEST_TABLE,
             params={})
+
+        print ('Destroying test collection.')
+        self.db.drop_collection(collection=self._TEST_TABLE)
+
+        print ('Destroying test database.')
+        self.db.drop_database()

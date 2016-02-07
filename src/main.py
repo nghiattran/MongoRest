@@ -6,11 +6,14 @@ database = 'test_collection'
 
 
 class MongoRest(object):
+    __client__ = None
     __db__ = None
+    __database_name__ = None
 
     def __init__(self, database, ip=None):
-        client = MongoClient('localhost', ip or 27017)
-        self.__db__ = client[database]
+        self.__database_name__ = database
+        self.__client__ = MongoClient('localhost', ip or 27017)
+        self.__db__ = self.__client__[database]
     
     def get(self, collection, params={}, keys=None, skip=0, limit=0):
         table = self.__db__[collection]
@@ -129,3 +132,9 @@ class MongoRest(object):
                 except Exception:
                     continue
         return list
+
+    def drop_collection(self, collection):
+        self.__db__.drop_collection(collection)
+
+    def drop_database(self):
+        self.__client__.drop_database(self.__database_name__)

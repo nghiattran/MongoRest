@@ -1,5 +1,4 @@
-from pymongo import MongoClient
-from src.main import MongoRest
+from index import MongoRest
 from copy import deepcopy
 import string
 import random

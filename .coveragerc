@@ -4,6 +4,10 @@ show_missing = True
 omit = venv/*
       venv\*
 ignore_errors = True
+exclude_lines =
+    except Exception as e:
+    except Exception:
+    return {'error': e.message}
 
 [run]
 #branch = True
@@ -13,3 +17,4 @@ include = src/*
 
 [html]
 directory = coverage/
+

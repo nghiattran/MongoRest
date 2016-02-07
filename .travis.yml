@@ -1,12 +1,12 @@
 language: python
 python:
     - "2.7"
+    - "3.5"
 
 # command to install dependencies
 install:
     - bin/install
     - pip install coveralls
-
 
 script:
     # command to run tests and coverage

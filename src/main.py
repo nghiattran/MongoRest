@@ -22,7 +22,7 @@ class MongoRest(object):
         )
         return list(res)
     
-    def post(self, collection, payload, master_key=None):
+    def post(self, collection, payload):
         table = self.__db__[collection]
         res = table.insert_one(
             payload
@@ -38,7 +38,6 @@ class MongoRest(object):
                 ordered=ordered,
                 bypass_document_validation=bypass_document_validation)
         except Exception as e:
-            print e
             return {'error': e.message}
     
         return payload, res
@@ -80,12 +79,8 @@ class MongoRest(object):
 
     def delete(self, collection, object_id, keys=None, sort=None):
         params = {
-            '_id': self.set_object_id(object_id)
+            '_id': ObjectId(object_id)
         }
-
-        if params['_id'] == -1:
-            return {'error': "InvalidId: 'id' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string"}
-
         table = self.__db__[collection]
         try :
             res = table.find_one_and_delete(
@@ -99,7 +94,7 @@ class MongoRest(object):
         except Exception as e:
             return {'error': e.message}
     
-        return self.parse_result_object(res)
+        return res
 
     def delete_batch(self, collection, params):
         table = self.__db__[collection]

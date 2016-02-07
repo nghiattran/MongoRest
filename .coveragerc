@@ -1,0 +1,15 @@
+[report]
+precision = 2
+show_missing = True
+omit = venv/*
+      venv\*
+ignore_errors = True
+
+[run]
+#branch = True
+source = src
+include = src/*
+          src\*
+
+[html]
+directory = coverage/

@@ -1,0 +1,17 @@
+language: python
+python:
+    - "2.7"
+
+# command to install dependencies
+install:
+    - bin/install
+    - pip install coveralls
+
+
+script:
+    # command to run tests and coverage
+    - bin/cover
+
+after_success:
+    # command to run coveralls
+    coveralls

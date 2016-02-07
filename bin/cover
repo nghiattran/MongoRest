@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+bin/clean
+nosetests --with-coverage --cover-branches --cover-html --cover-html-dir ./coverage

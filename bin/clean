@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+rm -rf cover coverage .coverage cov_report *.egg-info *.log *.rdb *.pyc

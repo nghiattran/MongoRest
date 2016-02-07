@@ -29,11 +29,13 @@ def sample_post_batch(payload=None):
     return res
 
 def test_get():
+    sample_post_batch()
     res = db.get(collection=TEST_TABLE, params={})
 
     assert len(res) > 0
 
 def test_get_one_object():
+    sample_post_batch()
     res = db.get(collection=TEST_TABLE, params={}, limit=1)
 
     assert len(res) == 1

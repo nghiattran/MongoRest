@@ -15,3 +15,6 @@ script:
 after_success:
     # command to run coveralls
     coveralls
+
+services:
+  - mongodb

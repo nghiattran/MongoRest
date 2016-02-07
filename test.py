@@ -92,7 +92,8 @@ def test_put_with_wrong_id():
     res = db.put(
             collection=TEST_TABLE,
             payload=TEST_SET_PUT.copy(),
-            object_id=random_string(length=12))
+            object_id=ObjectId(random_string(length=12))
+    )
 
     assert 'error' in res
 
@@ -126,7 +127,8 @@ def test_delete():
 def test_delete_with_wrong_id():
     res = db.delete(
         collection=TEST_TABLE,
-        object_id=random_string(length=12))
+        object_id=ObjectId(random_string(length=12))
+    )
 
     assert 'error' in res
 

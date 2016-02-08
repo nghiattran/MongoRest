@@ -1,4 +1,4 @@
-from src.main import BaseMongoRest
+from .src.main import BaseMongoRest
 
 class MongoRest(BaseMongoRest):
     pass

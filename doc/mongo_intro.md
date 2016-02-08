@@ -546,3 +546,112 @@ for updating objects once. Snapshotting makes queries slower.
 
 Inconsistencies arise only when the collection changes under a cursor while 
 it is waiting to get another batch of results.
+
+# Chap 5: Indexing
+
+## Introduction
+
+Index dramatically reduces query time by minimizing scanned objects. Indexing comes with a price. It will slows down INSERT, UPDATE, DELETE operations because mongo needs to update index afterward. Should only use a couple of indexes in a collection althought mongoDB support up to 64.
+
+### Create an index
+
+```
+	db.users.ensureIndex({"username" : 1})
+```
+
+### Create compound indexes
+
+```
+	db.users.ensureIndex({"age" : 1, "username" : 1})
+```
+
+What it does is that it will sort the collection based on `age` first and then `username`.
+
+Example without indexes
+
+```
+	{
+		{ "username" : "user0", "age" : 69 },
+		{ "username" : "user1", "age" : 50 },
+		{ "username" : "user2", "age" : 88 },
+		{ "username" : "user3", "age" : 52 },
+		{ "username" : "user4", "age" : 74 },
+		{ "username" : "user5", "age" : 104 },
+		{ "username" : "user6", "age" : 59 },
+		{ "username" : "user7", "age" : 102 },
+		{ "username" : "user8", "age" : 94 },
+		{ "username" : "user9", "age" : 7 },
+		{ "username" : "user10", "age" : 80 }
+	}
+```
+
+With compound index `{"age" : 1, "username" : 1}`
+
+```
+	[0, "user100309"] -> 0x0c965148
+	[0, "user100334"] -> 0xf51f818e
+	[0, "user100479"] -> 0x00fd7934
+	...
+	[0, "user99985" ] -> 0xd246648f
+	[1, "user100156"] -> 0xf78d5bdd
+	[1, "user100187"] -> 0x68ab28bd
+	[1, "user100192"] -> 0x5c7fb621
+	...
+	[1, "user999920"] -> 0x67ded4b7
+	[2, "user100141"] -> 0x3996dd46
+	[2, "user100149"] -> 0xfce68412
+	[2, "user100223"] -> 0x91106e23
+```
+
+Sorted by `age` and then `username` and each has a pointer to memory location.
+
+### Three most common ways to query with index
+
+##### Point query
+
+Very efficient because it can jump directly to the correct age and return already sorted list.
+
+```
+	db.users.find(
+		{
+			"age" : 21
+		}
+	).sort(
+		{
+			"username" : -1
+		}
+	)
+```
+
+##### Multi-value query
+
+Still efficient.
+
+```
+	db.users.find({
+		"age" : {
+			"$gte" : 21, "$lte" : 30
+		}
+	})
+```
+
+##### Multi-value query with sort
+
+Less efficient than the previous one because returning result is not in sorted order. `sort()` depends on how big the result is.
+
+```
+	db.users.find({
+		"age" : {
+			"$gte" : 21,
+			"$lte" : 30
+		}
+	}).sort({
+		"username" :1
+	})
+```
+
+##### Index in reverse order
+
+```
+	{"username" : 1, "age" : 1}
+```

@@ -1,11 +1,7 @@
-import bson
 from bson.objectid import ObjectId
-from pymongo import MongoClient, ReturnDocument, CursorType
+from pymongo import MongoClient, ReturnDocument, CursorType, IndexModel
 
-database = 'test_collection'
-
-
-class MongoRest(object):
+class BaseMongoRest(object):
     __client__ = None
     __db__ = None
     __database_name__ = None
@@ -14,8 +10,8 @@ class MongoRest(object):
         self.__database_name__ = database
         self.__client__ = MongoClient('localhost', ip or 27017)
         self.__db__ = self.__client__[database]
-    
-    def get(self, collection, params={}, keys=None, skip=0, limit=0):
+
+    def get(self, collection, params, keys=None, skip=0, limit=0):
         table = self.__db__[collection]
         res = table.find(
             filter=params,
@@ -23,14 +19,22 @@ class MongoRest(object):
             limit=limit,
             projection=keys
         )
-        return list(res)
+        return {
+            'results': list(res),
+            'code': 200
+        }
     
     def post(self, collection, payload):
         table = self.__db__[collection]
         res = table.insert_one(
             payload
         )
-        return payload, res
+
+        return {
+            'results': payload,
+            'response': self.parse_result_object(res),
+            'code': 200
+        }
     
     def post_batch(self, collection, payload, ordered=True,
                    bypass_document_validation=False):
@@ -42,8 +46,12 @@ class MongoRest(object):
                 bypass_document_validation=bypass_document_validation)
         except Exception as e:
             return {'error': e.message}
-    
-        return payload, res
+
+        return {
+            'results': payload,
+            'response': self.parse_result_object(res),
+            'code': 200
+        }
     
     def put(self, collection, object_id, payload, keys=None, sort=None):
         params = {
@@ -64,7 +72,10 @@ class MongoRest(object):
         except Exception as e:
             return {'error': e.message}
     
-        return res
+        return {
+            'results': res,
+            'code': 200
+        }
     
     def put_batch(self, collection,params, payload, upsert=False,
                   bypass_document_validation=False):
@@ -76,8 +87,11 @@ class MongoRest(object):
             )
         except Exception as e:
             return {'error': e.message}
-        self.parse_result_object(res)
-        return self.parse_result_object(res)
+
+        return {
+            'results': self.parse_result_object(res),
+            'code': 200
+        }
 
 
     def delete(self, collection, object_id, keys=None, sort=None):
@@ -97,7 +111,10 @@ class MongoRest(object):
         except Exception as e:
             return {'error': e.message}
     
-        return res
+        return {
+            'results': res,
+            'code': 200
+        }
 
     def delete_batch(self, collection, params):
         table = self.__db__[collection]
@@ -108,7 +125,10 @@ class MongoRest(object):
         except Exception as e:
             return {'error': e.message}
 
-        return self.parse_result_object(res)
+        return {
+            'results': self.parse_result_object(res),
+            'code': 200
+        }
     
     def count(self, collection, params, **kwargs):
         table = self.__db__[collection]

@@ -1,8 +1,5 @@
-import bson
-import pymongo
 from bson.objectid import ObjectId
 from pymongo import MongoClient, ReturnDocument, CursorType, IndexModel
-import base64
 
 class BaseMongoRest(object):
     __client__ = None
@@ -14,7 +11,7 @@ class BaseMongoRest(object):
         self.__client__ = MongoClient('localhost', ip or 27017)
         self.__db__ = self.__client__[database]
 
-    def get(self, collection, params={}, keys=None, skip=0, limit=0):
+    def get(self, collection, params, keys=None, skip=0, limit=0):
         table = self.__db__[collection]
         res = table.find(
             filter=params,

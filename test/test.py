@@ -3,7 +3,6 @@ import bson
 from bson.objectid import ObjectId
 from . import BaseTest
 
-
 class TestClass(BaseTest):
     def test_get(self):
         self.sample_post_batch()
